@@ -16,8 +16,10 @@
 
 package com.example.android.android_me.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.android_me.R;
@@ -26,6 +28,9 @@ import com.example.android.android_me.R;
 // Implement the MasterListFragment callback, OnImageClickListener
 public class MainActivity extends AppCompatActivity implements MasterListFragment.OnImageClickListener{
 
+    public static final String KEY_SELECTED_INDEX_HEAD = "selectedIndexHead";
+    public static final String KEY_SELECTED_INDEX_BODY = "selectedIndexBody";
+    public static final String KEY_SELECTED_INDEX_LEG = "selectedIndexLeg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +44,29 @@ public class MainActivity extends AppCompatActivity implements MasterListFragmen
         // Create a Toast that displays the position that was clicked
         Toast.makeText(this, "Position clicked = " + position, Toast.LENGTH_SHORT).show();
 
-        // TODO (2) Based on where a user has clicked, store the selected list index for the head, body, and leg BodyPartFragments
+        final Bundle androidMeBundle = new Bundle();
+        int selectedSection = position / 12;
+        int selectedIndex = position % 12;
+        switch (selectedSection) {
+            case 0:
+                androidMeBundle.putInt(KEY_SELECTED_INDEX_HEAD, selectedIndex);
+                break;
+            case 1:
+                androidMeBundle.putInt(KEY_SELECTED_INDEX_BODY, selectedIndex);
+                break;
+            case 2:
+                androidMeBundle.putInt(KEY_SELECTED_INDEX_LEG, selectedIndex);
+                break;
+        }
 
-        // TODO (3) Put this information in a Bundle and attach it to an Intent that will launch an AndroidMeActivity
-
-        // TODO (4) Get a reference to the "Next" button and launch the intent when this button is clicked
-
+        findViewById(R.id.next_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AndroidMeActivity.class);
+                intent.putExtras(androidMeBundle);
+                startActivity(intent);
+            }
+        });
     }
 
 }
